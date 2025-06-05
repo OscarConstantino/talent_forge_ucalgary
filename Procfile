@@ -1,0 +1,1 @@
+web: gunicorn employment_placemnet_app.wsgi
