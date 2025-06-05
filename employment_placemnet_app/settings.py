@@ -19,6 +19,7 @@ from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
 
 # Quick-start development settings - unsuitable for production
@@ -102,13 +103,7 @@ SOCIALACCOUNT_AUTO_SIGNUP = True
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'default': dj_database_url.config(
-            default=config('DATABASE_URL'),
-            conn_max_age=600,
-            ssl_require=True
-        )
-    }
+    "default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)
 }
 
 # Password validation
