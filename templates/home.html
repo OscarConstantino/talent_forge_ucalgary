@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}TalentForge{% endblock %}
+
+{% block content %}
+<p></p>
+<div class="jumbotron text-center">
+    <h1 class="display-4">Welcome to TalentForge!</h1>
+</div>
+<hr>
+<div class="text-center">
+    <p><h3>Find Your Dream Job or Hire Top Talent Faster..!</h3></p>
+    <a type="button" class="btn btn-primary" href="{% url 'signup' user_type=1 %}">Job seeker</a>
+    <a type="button" class="btn bt-secondary" href="{% url 'signup' user_type=2 %}">Recruiter</a>
+</div>
+
+{% endblock %}
