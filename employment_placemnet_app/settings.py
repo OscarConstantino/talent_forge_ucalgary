@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-v9ih(vmg)((b7ysd*1s%lz&vxlz$uxnbxfz+q#74(q2&#aa3vs'
 
-DATABASE_URL = 'postgresql://tf_admin:M6fTwDHk6QadjAZfENBZSZT7QrjLWOCf@dpg-d10uoqmmcj7s73c398p0-a.oregon-postgres.render.com/talent_forge_1'
+DATABASE_URL = 'postgresql://tf_ad_1:qCG0NUdJFUqwVLINoUMz6PaOUdqrE20n@dpg-d16o7vodl3ps739kq6fg-a.oregon-postgres.render.com/talent_forge_rwk7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
