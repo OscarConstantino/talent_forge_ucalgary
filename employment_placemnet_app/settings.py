@@ -29,7 +29,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 
-DATABASE_URL = 'postgresql://talent_forge_0yek_user:JdckVcZgNc7hICpNFgll13maKDAV7KPc@dpg-d1r93fur433s73a0tveg-a.oregon-postgres.render.com/talent_forge_0yek'
+#DATABASE_URL = 'postgresql://talent_forge_0yek_user:JdckVcZgNc7hICpNFgll13maKDAV7KPc@dpg-d1r93fur433s73a0tveg-a.oregon-postgres.render.com/talent_forge_0yek'
+DATABASE_URL = config('DATABASE_URL')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
