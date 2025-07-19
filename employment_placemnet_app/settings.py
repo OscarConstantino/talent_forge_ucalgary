@@ -24,12 +24,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-#SECRET_KEY = 'django-insecure-v9ih(vmg)((b7ysd*1s%lz&vxlz$uxnbxfz+q#74(q2&#aa3vs'
 # DEBUG = config('DEBUG', default=False, cast=bool)
+#SECRET_KEY = 'django-insecure-v9ih(vmg)((b7ysd*1s%lz&vxlz$uxnbxfz+q#74(q2&#aa3vs'
 SECRET_KEY = config('SECRET_KEY')
 
 
-DATABASE_URL = 'postgresql://tf_ad_1:blak9RtsRkYlhHI01vGxMbeqC9Y0KiWG@dpg-d16olq15pdvs73fj2bgg-a.oregon-postgres.render.com/talent_forge_70yy'
+DATABASE_URL = 'postgresql://talent_forge_0yek_user:JdckVcZgNc7hICpNFgll13maKDAV7KPc@dpg-d1r93fur433s73a0tveg-a.oregon-postgres.render.com/talent_forge_0yek'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

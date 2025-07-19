@@ -2,14 +2,17 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import JobSeekerProfileForm, EducationForm, CertificationForm, JobExperienceForm
 from .models import JobSeekerProfile, Skill
+from employeer.models import Job
 from rest_framework import generics
 from django.conf import settings 
 from django.http import JsonResponse
-# views.py
+from django.views.decorators.http import require_GET
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
-from .serializers import JobSeekerProfileSerializer, SkillSerializer, JobSeekerProfileCreateSerializer
+from .serializers import JobSeekerProfileSerializer, SkillSerializer, JobSeekerProfileCreateSerializer, JobSerializer
+from django.db.models import Q
+
 
 @login_required
 def jobseeker_profile_page(request):
@@ -19,6 +22,7 @@ def jobseeker_profile_page(request):
     return render(request, 'job_seeker/create_js_profile.html')
 
 class SkillListAPIView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Skill.objects.all()
     serializer_class = SkillSerializer
 
@@ -33,6 +37,15 @@ class JobSeekerProfileCreateAPIView(APIView):
             profile = serializer.save()
             return Response({'message': 'Profile created'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def get(self, request):
+        profile = get_object_or_404(JobSeekerProfile, user=request.user)
+        data = {
+            'js_name': profile.name,
+            'js_email': profile.email,
+            'js_skills': profile.skills,
+        }
+        return JsonResponse(data)
 
 @login_required
 def create_job_seeker_profile(request):
@@ -71,7 +84,6 @@ class JobSeekerProfileDetailAPIView(APIView):
 @login_required
 def employer_profile_api(request):
     profile = get_object_or_404(JobSeekerProfile, user=request.user)
-    print(profile)
     data = {
         'first_name': profile.first_name,
         'last_name': profile.last_name,
@@ -79,3 +91,30 @@ def employer_profile_api(request):
         'about': profile.about,
     }
     return JsonResponse(data)
+
+class JobSearchAPIView(APIView):
+    def get(self, request):
+        name = request.GET.get('name', '').strip()
+        job_type = request.GET.get('type', '').strip()
+        skills_param = request.GET.get('skills', '').strip()
+
+        queryset = Job.objects.all()
+
+        if name:
+            queryset = queryset.filter(job_title__icontains=name)
+
+        if job_type:
+            queryset = queryset.filter(type__iexact=job_type)
+
+        if skills_param:
+            skill_names = [s.strip() for s in skills_param.split(',') if s.strip()]
+            if skill_names:
+                queryset = queryset.filter(skills__name__in=skill_names).distinct()
+
+        serializer = JobSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+@login_required
+def job_search_page(request):
+    return render(request, 'job_seeker/job_search.html')

@@ -3,6 +3,7 @@ from .models import (
     JobSeekerProfile, Education, Certification, Skill, JobSeekerSkill, JobExperience
 )
 from user.models import CustomUser
+from employeer.models import Job, EmployerProfile
 
 
 class EducationSerializer(serializers.ModelSerializer):
@@ -81,3 +82,9 @@ class JobSeekerProfileCreateSerializer(serializers.ModelSerializer):
             Certification.objects.create(job_seeker=profile, **cert_data)
 
         return profile
+
+class JobSerializer(serializers.ModelSerializer):
+    employer_name = serializers.CharField(source='employer.name', read_only=True)
+    class Meta:
+        model = Job
+        fields = ['id', 'job_title', 'description', 'location', 'employer_name','work_mode']

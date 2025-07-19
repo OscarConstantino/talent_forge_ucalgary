@@ -1,0 +1,39 @@
+{% extends "base_users.html" %}
+{% load static %}
+
+{% block title %}Job Listings{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">Available Job Listings</h2>
+
+  {% if jobs %}
+    <div class="row">
+      {% for job in jobs %}
+        <div class="col-md-6 mb-4">
+          <div class="card shadow-sm h-100">
+            <div class="card-body">
+              <h4 class="card-title">{{ job.job_title }}</h4>
+              <h6 class="card-subtitle mb-2 text-muted">{{ job.get_type_display }} | {{ job.location }}</h6>
+              <p class="card-text">{{ job.description|truncatechars:150 }}</p>
+
+              {% if job.skills.all %}
+              <div class="mb-2">
+                <strong>Skills:</strong>
+                {% for skill in job.skills.all %}
+                  <span class="badge bg-primary me-1">{{ skill.name }}</span>
+                {% endfor %}
+              </div>
+              {% endif %}
+
+              
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No jobs found at the moment.</p>
+  {% endif %}
+</div>
+{% endblock %}

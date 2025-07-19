@@ -1,4 +1,4 @@
-import { LogOut } from "lucide-react";
+import { User, LogOut } from "lucide-react";
 
 // Helper function to get CSRF token from cookies
 function getCookie(name: string) {
@@ -62,14 +62,14 @@ const Header = () => {
       </div>
       <nav className="nav-links">
         <a href="#" className="active">Home</a>
-        <a href="/create_job/">Post a Job</a>
-        <a href="/jobs/">Manage Active Listings</a>
-        <a href="#">Find Talent</a>
-        <a href="#">Premium</a>
+        <a href="#">Profile</a>
+        <a href="#">Jobs applied</a>
+        <a href="/job_search_page/">Search Job</a>
       </nav>
       <div className="user-controls"> {/* Changed div name for better semantics */}
+        <User size={24} strokeWidth={2.5} />
         {/* Sign-out button */}
-        <button onClick={handleSignOut} className="btn btn-outline btn-sm d-flex align-items-center">
+        <button onClick={handleSignOut} className="sign-out-button">
           <LogOut size={24} strokeWidth={2.5} />
           <span className="sign-out-text">Sign Out</span> {/* Optional text label */}
         </button>

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import jobseeker_profile_page, JobSeekerProfileCreateAPIView, SkillListAPIView, JobSeekerProfileDetailAPIView
+from .views import jobseeker_profile_page, JobSeekerProfileCreateAPIView, SkillListAPIView, JobSeekerProfileDetailAPIView, JobSearchAPIView
 from . import views
 
 urlpatterns = [
@@ -10,4 +10,6 @@ urlpatterns = [
     path('api/jobseeker/create/', JobSeekerProfileCreateAPIView.as_view(), name='api_create_jobseeker_profile'),
     path('api/skills/', SkillListAPIView.as_view(), name='skills-list'),
     path('api/jobseeker/profile/', JobSeekerProfileDetailAPIView.as_view(), name='jobseeker-profile'),
+    path('api/jobs_search/', JobSearchAPIView.as_view(), name='job-search'),
+    path('job_search_page/', views.job_search_page, name='job_search_page'),
 ]

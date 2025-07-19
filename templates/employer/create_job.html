@@ -1,0 +1,226 @@
+{% extends "base_users.html" %}
+{% load static %}
+
+{% block title %}Create new Job{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center" style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
+    <div class="col-lg-6 col-md-8">
+        <div class="bg-white rounded-3 shadow p-5" style="color: black;">
+          <h2>Employer Registration</h2>
+          <hr style="background-color: white; height: 1px;">
+          {% load widget_tweaks %}
+          <form method="post" enctype="multipart/form-data"> {# Add enctype for file uploads (logo) #}
+              {% csrf_token %}
+              {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>                        
+                    {% render_field field class="form-control" %} 
+                    {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% if field.errors %}
+                        <div class="text-danger small">
+                            {% for error in field.errors %}
+                                <div>{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}                  
+              {% endfor %}
+              <hr>
+                <div class="mb-4 p-3 border rounded bg-light">
+                  <h3>Skills</h3>
+                  <div id="selected-skills" class="d-flex flex-wrap gap-2 mb-2"></div>
+
+                  <input
+                    type="text"
+                    id="skill-input"
+                    class="form-control"
+                    placeholder="Type to add skill..."
+                    autocomplete="off"
+                  />
+                  <ul id="skill-suggestions" class="list-group mt-2 position-relative" style="z-index: 999;"></ul>
+
+                  <!-- Hidden input to submit to Django -->
+                  <input type="hidden" name="skills_text" id="skills-text" />
+                </div>
+
+              </div>
+
+              {# --- Terms of Service Section for Job Creation --- #}
+              <div class="mb-4 p-3 border rounded bg-light" style="color: black;">
+                  <h3 class="mb-3">Terms of Service</h3>
+                  <div class="terms-scroll-box mb-3 p-3 border rounded bg-white" style="max-height: 200px; overflow-y: auto;">
+                      <p>
+                          By submitting a job posting through our platform, you agree to the following Terms of Service (“Terms”). Please read them carefully:
+                      </p>
+                      <p>1. Acceptance of terms: By creating a job post, you represent and warrant that:</p>
+                      <ul>
+                          <li>You are authorized to post jobs on behalf of your organization.</li>
+                          <li>All information provided in the job posting is accurate, lawful, and up-to-date.</li>
+                          <li>You agree to be bound by these Terms and our Privacy Policy.</li>
+                          <li>If you do not agree to these Terms, do not proceed with posting the job.</li>
+                      </ul>
+                      <p>2. Job Information Requirements. You agree to include the following when creating a job post:</p>
+                      <ul>
+                          <li>Job Title: A clear and descriptive title.</li>
+                          <li>Job Description: Detailed responsibilities, requirements, and expectations.</li>
+                          <li>Location: Specify remote, hybrid, or physical location with details.</li>
+                          <li>Employment Type: Full-time, part-time, contract, etc.</li>
+                          <li>Salary Range (optional but encouraged): Transparency supports better matches.</li>
+                          <li>Required Skills: Accurate listing of core and preferred skills.</li>
+                      </ul>
+                      <p>3. Use of posted information. Information in your job post may be used to:</p>
+                      <ul>
+                          <li>Display the job listing on our platform and partner networks.</li>
+                          <li>Match and recommend job seekers to your job post.</li>
+                          <li>Facilitate communication between your organization and applicants.</li>
+                      </ul>
+                      <p>
+                          We will not share your contact information with third parties without your consent, except as required by law.
+                      </p>
+                      <p>4. Employer responsibilities. When posting jobs, you agree:</p>
+                      <ul>
+                          <li>Not to post misleading, discriminatory, or illegal content.</li>
+                          <li>To ensure job descriptions are relevant, respectful, and accurate.</li>
+                          <li>To regularly review and update your job listings as needed.</li>
+                          <li>To engage with job seekers professionally and respectfully.</li>
+                      </ul>
+                      <p>
+                          5. Intellectual property. You affirm that any content you post (e.g., logos, descriptions) is owned by you or that you have permission to use it. You grant [YourPlatformName] a non-exclusive, royalty-free license to display this content for job promotion.
+                      </p>
+                      <p>
+                          6. Moderation and removal. We reserve the right to remove any job post that violates these Terms, our policies, or is reported as fraudulent or inappropriate.
+                      </p>
+                      <p>
+                          7. Modifications. We may revise these Terms periodically. You will be notified of significant changes. Continued use of our job posting services implies acceptance of the revised Terms.
+                      </p>
+                      <p>
+                          8. Contact us. If you have questions about these Terms, please contact us at: oscar@talent_forge.com. Calgary, Canada.
+                      </p>
+                      <p>
+                          <strong>If you do not agree to these terms, please do not submit a job posting.</strong>
+                      </p>
+                  </div>
+                  <div class="form-check">
+                      <input
+                          class="form-check-input"
+                          type="checkbox"
+                          id="termsAccepted"
+                          name="terms_accepted"
+                          required
+                      />
+                      <label class="form-check-label" for="termsAccepted">
+                          I have read and agree to the <a href="#terms-of-service" onclick="return false;">Terms of Service</a>
+                      </label>
+                  </div>
+              </div>
+              {# --- END: Terms of Service Section for Job Creation --- #}
+
+              <button type="submit" class="btn btn-primary mt-3">Register New Job</button>
+          </form>
+
+          <hr style="background-color: white; height: 1px;">
+
+        </div>
+    </div>
+  </div>
+</div>
+
+{{ all_skills|json_script:"skill-data" }}
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const skills = JSON.parse(document.getElementById("skill-data").textContent);
+    const input = document.getElementById("skill-input");
+    const suggestions = document.getElementById("skill-suggestions");
+    const selectedSkills = document.getElementById("selected-skills");
+    const skillsText = document.getElementById("skills-text");
+
+    let selected = [];
+
+    function updateHiddenInput() {
+      skillsText.value = selected.join(",");
+    }
+
+    function renderSelected() {
+      selectedSkills.innerHTML = "";
+      selected.forEach((skill) => {
+        const badge = document.createElement("span");
+        badge.className = "badge bg-primary m-1 p-2";
+        badge.innerHTML = `${skill} <button type="button" class="btn-close btn-close-white btn-sm ms-1" aria-label="Remove"></button>`;
+        badge.querySelector("button").onclick = () => {
+          selected = selected.filter((s) => s !== skill);
+          renderSelected();
+          updateHiddenInput();
+        };
+        selectedSkills.appendChild(badge);
+      });
+    }
+
+    function showSuggestions(query) {
+      const filtered = skills.filter(
+        (s) =>
+          s.name.toLowerCase().includes(query.toLowerCase()) &&
+          !selected.includes(s.name)
+      );
+
+      suggestions.innerHTML = "";
+      filtered.forEach((skill) => {
+        const li = document.createElement("li");
+        li.className = "list-group-item list-group-item-action";
+        li.textContent = skill.name;
+        li.style.cursor = "pointer";
+        li.onclick = () => {
+          selected.push(skill.name);
+          renderSelected();
+          updateHiddenInput();
+          input.value = "";
+          suggestions.innerHTML = "";
+        };
+        suggestions.appendChild(li);
+      });
+
+      if (filtered.length === 0 && query.trim()) {
+        const li = document.createElement("li");
+        li.className = "list-group-item list-group-item-warning";
+        li.textContent = `➕ Add new skill: ${query}`;
+        li.style.cursor = "pointer";
+        li.onclick = () => {
+          selected.push(query);
+          renderSelected();
+          updateHiddenInput();
+          input.value = "";
+          suggestions.innerHTML = "";
+        };
+        suggestions.appendChild(li);
+      }
+    }
+
+    input.addEventListener("input", () => {
+      showSuggestions(input.value);
+    });
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        if (input.value.trim() && !selected.includes(input.value.trim())) {
+          selected.push(input.value.trim());
+          renderSelected();
+          updateHiddenInput();
+          input.value = "";
+          suggestions.innerHTML = "";
+        }
+      }
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!input.contains(e.target) && !suggestions.contains(e.target)) {
+        suggestions.innerHTML = "";
+      }
+    });
+  });
+</script>
+
+{% endblock %}
