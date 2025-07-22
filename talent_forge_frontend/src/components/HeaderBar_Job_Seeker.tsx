@@ -63,7 +63,7 @@ const Header = () => {
       <nav className="nav-links">
         <a href="#" className="active">Home</a>
         <a href="#">Profile</a>
-        <a href="#">Jobs applied</a>
+        <a href="/my_applications/">Jobs applied</a>
         <a href="/job_search_page/">Search Job</a>
       </nav>
       <div className="user-controls"> {/* Changed div name for better semantics */}

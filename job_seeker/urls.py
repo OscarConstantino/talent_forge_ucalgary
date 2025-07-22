@@ -11,5 +11,7 @@ urlpatterns = [
     path('api/skills/', SkillListAPIView.as_view(), name='skills-list'),
     path('api/jobseeker/profile/', JobSeekerProfileDetailAPIView.as_view(), name='jobseeker-profile'),
     path('api/jobs_search/', JobSearchAPIView.as_view(), name='job-search'),
+    path('api/apply_job/', views.apply_job, name='job-search'),
     path('job_search_page/', views.job_search_page, name='job_search_page'),
+    path('my_applications/', views.my_applications_page, name='my_applications_page'),
 ]

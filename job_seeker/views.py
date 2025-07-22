@@ -1,15 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import JobSeekerProfileForm, EducationForm, CertificationForm, JobExperienceForm
-from .models import JobSeekerProfile, Skill
+from .models import JobSeekerProfile, Skill, JobApplication
 from employeer.models import Job
-from rest_framework import generics
 from django.conf import settings 
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, permissions
+from rest_framework import status, permissions, generics
+from rest_framework.decorators import api_view
 from .serializers import JobSeekerProfileSerializer, SkillSerializer, JobSeekerProfileCreateSerializer, JobSerializer
 from django.db.models import Q
 
@@ -111,10 +111,39 @@ class JobSearchAPIView(APIView):
             if skill_names:
                 queryset = queryset.filter(skills__name__in=skill_names).distinct()
 
-        serializer = JobSerializer(queryset, many=True)
-        return Response(serializer.data)
+        job_list = []
+        for job in queryset:
+            job_data = JobSerializer(job).data
+            job_data['has_applied'] = job.applications.filter(applicant=request.user).exists()
+            job_list.append(job_data)
 
+        return Response(job_list)
 
 @login_required
 def job_search_page(request):
     return render(request, 'job_seeker/job_search.html')
+
+@api_view(['POST'])
+@login_required
+def apply_job(request):
+    if request.method == 'POST':
+        job_id = request.data.get('job_id')
+
+        if not job_id:
+            return Response({'detail': 'Missing job_id'}, status=400)
+
+        try:
+            job = Job.objects.get(id=job_id)
+        except Job.DoesNotExist:
+            return Response({'detail': 'Job not found'}, status=404)
+
+        if JobApplication.objects.filter(job=job, applicant=request.user).exists():
+            return Response({'detail': 'Already applied'}, status=400)
+
+        JobApplication.objects.create(job=job, applicant=request.user)
+        return Response({'message': 'Application successful'}, status=201)
+
+@login_required
+def my_applications_page(request):
+    applications = JobApplication.objects.filter(applicant=request.user).select_related('job')
+    return render(request, 'job_seeker/my_applications.html', {'applications': applications})

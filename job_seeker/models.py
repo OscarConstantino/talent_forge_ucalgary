@@ -1,5 +1,6 @@
 from django.db import models
 from user.models import CustomUser
+from django.conf import settings
 
 # Create your models here.
 class JobSeekerProfile(models.Model):
@@ -89,3 +90,23 @@ class JobSeekerSkill(models.Model):  # if using through model
 
     def __str__(self):
         return f"{self.job_seeker} - {self.skill} ({self.proficiency})"
+
+class JobApplication(models.Model):
+    STATUS_CHOICES = [
+        ('submitted', 'Submitted'),
+        ('under_review', 'Under Review'),
+        ('interview', 'Interview'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+    ]
+
+    job = models.ForeignKey('employeer.Job', on_delete=models.CASCADE, related_name='applications')
+    applicant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='applications')
+    applied_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='submitted')
+
+    class Meta:
+        unique_together = ('job', 'applicant')  # prevents duplicate applications
+
+    def __str__(self):
+        return f"{self.applicant.email} applied to {self.job.job_title}"

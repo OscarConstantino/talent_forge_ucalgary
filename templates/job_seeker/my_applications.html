@@ -1,0 +1,25 @@
+{% extends "base_users_job_seeker.html" %}
+{% load static %}
+
+{% block title %}Jobs applied{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">My Job Applications</h2>
+
+  {% if applications %}
+    <ul class="list-group">
+      {% for app in applications %}
+        <li class="list-group-item">
+          <h5>{{ app.job.job_title }}</h5>
+          <p><strong>Type:</strong> {{ app.job.type }}</p>
+          <p><strong>Applied At:</strong> {{ app.applied_at|date:"F j, Y" }}</p>
+          <p><strong>Status:</strong> {{ app.status }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>You haven't applied to any jobs yet.</p>
+  {% endif %}
+</div>
+{% endblock %}
