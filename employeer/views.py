@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from .forms import EmployerProfileForm, JobForm
 from .models import EmployerProfile, Job
-from job_seeker.models import Skill
+from job_seeker.models import Skill, JobApplication
 
 @login_required
 def create_employer_profile(request):
@@ -74,3 +74,48 @@ def job_list(request):
     jobs = Job.objects.filter(employer=employer_profile).prefetch_related('skills')
 
     return render(request, 'employer/job_list.html', {'jobs': jobs})
+
+@login_required
+def job_applications(request, job_id):
+    job = get_object_or_404(Job, pk=job_id)
+    # Use the related_name 'applications' to get all applications for this job
+    applications = job.applications.all().order_by('-applied_at') # Order by most recent
+
+    context = {
+        'job': job,
+        'applications': applications,
+    }
+    return render(request, 'employer/job_applications.html', context)
+
+@login_required
+def update_application_status(request, application_id):
+    if request.method == 'POST':
+        application = get_object_or_404(JobApplication, pk=application_id)
+
+        # Basic permission check: Ensure the logged-in user (employer) has the right to modify this application.
+        # This is a crucial step for security. You might want more sophisticated checks.
+        # For example, check if the job associated with the application belongs to the current employer.
+        # This example assumes request.user is an Employer type.
+        if request.user.is_authenticated and request.user.user_type == '2': # '2' for Employer
+            # Further check: Ensure the job associated with this application belongs to this employer
+            # This requires the Job model to have a link to the employer (e.g., a ForeignKey to CustomUser)
+            # Example (assuming Job has an 'employer' ForeignKey):
+            # if application.job.employer != request.user:
+            #     return redirect('permission_denied_page') # Or return HttpResponseForbidden
+
+            new_status = request.POST.get('status')
+
+            if new_status and new_status in [choice[0] for choice in JobApplication.STATUS_CHOICES]:
+                application.status = new_status
+                application.save()
+                # Optionally add a success message
+                # messages.success(request, f"Application status updated to {application.get_status_display()}")
+            # else:
+                # messages.error(request, "Invalid status provided.")
+        # else:
+            # messages.error(request, "You do not have permission to perform this action.")
+            # return redirect('login') # Or wherever unauthenticated users should go
+
+        # After updating, redirect back to the job applications page
+        # Make sure 'job_applications' URL expects job_id
+        return redirect('job_applications', job_id=application.job.id)

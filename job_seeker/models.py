@@ -93,17 +93,18 @@ class JobSeekerSkill(models.Model):  # if using through model
 
 class JobApplication(models.Model):
     STATUS_CHOICES = [
-        ('submitted', 'Submitted'),
+        ('applied', 'Applied'), # Keep 'submitted' as the initial default
         ('under_review', 'Under Review'),
         ('interview', 'Interview'),
-        ('accepted', 'Accepted'),
+        ('final_round', 'Final Round'), # New option
+        ('selected', 'Selected'),       # New option
         ('rejected', 'Rejected'),
     ]
 
     job = models.ForeignKey('employeer.Job', on_delete=models.CASCADE, related_name='applications')
     applicant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='applications')
     applied_at = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='submitted')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='applied')
 
     class Meta:
         unique_together = ('job', 'applicant')  # prevents duplicate applications

@@ -28,7 +28,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #SECRET_KEY = 'django-insecure-v9ih(vmg)((b7ysd*1s%lz&vxlz$uxnbxfz+q#74(q2&#aa3vs'
 SECRET_KEY = config('SECRET_KEY')
 
-
 #DATABASE_URL = 'postgresql://talent_forge_0yek_user:JdckVcZgNc7hICpNFgll13maKDAV7KPc@dpg-d1r93fur433s73a0tveg-a.oregon-postgres.render.com/talent_forge_0yek'
 DATABASE_URL = config('DATABASE_URL')
 

@@ -8,16 +8,28 @@
   <h2 class="mb-4">My Job Applications</h2>
 
   {% if applications %}
-    <ul class="list-group">
-      {% for app in applications %}
-        <li class="list-group-item">
-          <h5>{{ app.job.job_title }}</h5>
-          <p><strong>Type:</strong> {{ app.job.type }}</p>
-          <p><strong>Applied At:</strong> {{ app.applied_at|date:"F j, Y" }}</p>
-          <p><strong>Status:</strong> {{ app.status }}</p>
-        </li>
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr class="table-primary">
+          <th scope="col">Job name</th>
+          <th scope="col">Type</th>
+          <th scope="col">Applied at</th>
+          <th scope="col">Status</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for app in applications %}
+        <tr>
+          <th>{{ app.job.job_title }}</th>
+          <th>{{ app.job.type }}</th>
+          <th>{{ app.applied_at|date:"F j, Y" }}</th>
+          <th>{{ app.get_status_display }}</th>
+          <th><a href="">Withdraw</a></th>
+        </tr>
       {% endfor %}
-    </ul>
+      </tbody>
+    </table>
   {% else %}
     <p>You haven't applied to any jobs yet.</p>
   {% endif %}

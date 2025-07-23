@@ -61,7 +61,7 @@ const Header = () => {
         <span className="brand-text"></span>
       </div>
       <nav className="nav-links">
-        <a href="#" className="active">Home</a>
+        <a href="/employer_dashboard/" className="active">Home</a>
         <a href="/create_job/">Post a Job</a>
         <a href="/jobs/">Manage Active Listings</a>
         <a href="#">Find Talent</a>

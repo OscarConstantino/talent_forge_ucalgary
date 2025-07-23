@@ -1,0 +1,114 @@
+{% extends "base_users.html" %}
+{% load static %}
+
+{% block title %}Applications for {{ job.job_title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">Applications for "{{ job.job_title }}"</h2>
+  <p class="text-muted">Location: {{ job.location }}</p> {# Assuming job has a location field #}
+  <hr>
+
+  {% if applications %}
+    <div class="list-group">
+      {% for application in applications %}
+        <div class="list-group-item list-group-item-action flex-column align-items-start mb-3 shadow-sm">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ application.applicant.job_seeker_profile.first_name }} {{ application.applicant.job_seeker_profile.last_name }}</h5>
+            <small class="text-muted">Applied on: {{ application.applied_at|date:"F j, Y, P" }}</small>
+          </div>
+          <p class="mb-1"><strong>Email:</strong> {{ application.applicant.email }}</p>
+          <p class="mb-1"><strong>Phone number:</strong> {{ application.applicant.job_seeker_profile.phone_number }}</p>
+          <p class="mb-1"><strong>Status: </strong> <span class="badge bg-info">{{ application.get_status_display }}</span></p>
+          {% if application.applicant.profile.resume %}
+            <a href="{{ application.applicant.profile.resume.url }}" target="_blank" class="btn btn-sm btn-info mt-2">View Resume</a>
+          {% endif %}
+          <hr>
+          <button type="button" class="btn btn-success modify-status-btn"
+                  data-bs-toggle="modal"
+                  data-bs-target="#statusModal"
+                  data-application-id="{{ application.id }}"
+                  data-current-status="{{ application.status }}">
+            Modify Status
+          </button>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No applications found for this job yet.</p>
+  {% endif %}
+
+  <div class="mt-4">
+    <a href="{% url 'job_list' %}" class="btn btn-secondary">Back to Job Listings</a>
+  </div>
+  <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="statusModalLabel">Modify Application Status</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="statusForm" method="post" action="">
+        {% csrf_token %}
+        <div class="modal-body">
+          <p>Applicant: <strong id="modalApplicantName"></strong></p>
+          <p>Current Status: <span class="badge bg-secondary" id="modalCurrentStatus"></span></p>
+          <div class="mb-3">
+            <label for="newStatus" class="form-label">Select New Status:</label>
+            <select class="form-select" id="newStatus" name="status" required>
+              <option value="">-- Select Status --</option>
+              <option value="under_review">Under Review</option>
+              <option value="interview">Interview</option>
+              <option value="final_round">Final Round</option>
+              <option value="selected">Selected</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+          <input type="hidden" id="applicationId" name="application_id">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> {# Ensure jQuery is loaded before Bootstrap's JS #}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  $(document).ready(function() {
+    var statusModal = document.getElementById('statusModal');
+    statusModal.addEventListener('show.bs.modal', function (event) {
+      // Button that triggered the modal
+      var button = event.relatedTarget;
+      // Extract info from data-bs-* attributes
+      var applicationId = button.getAttribute('data-application-id');
+      var currentStatus = button.getAttribute('data-current-status');
+      var applicantName = $(button).closest('.list-group-item').find('h5').text().trim(); // Get applicant name from the card
+
+      // Update the modal's content.
+      var modalTitle = statusModal.querySelector('.modal-title');
+      var modalApplicantName = statusModal.querySelector('#modalApplicantName');
+      var modalCurrentStatus = statusModal.querySelector('#modalCurrentStatus');
+      var applicationIdInput = statusModal.querySelector('#applicationId');
+      var newStatusSelect = statusModal.querySelector('#newStatus');
+      var statusForm = statusModal.querySelector('#statusForm');
+
+      modalApplicantName.textContent = applicantName;
+      modalCurrentStatus.textContent = currentStatus.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()); // Format status nicely
+      applicationIdInput.value = applicationId;
+
+      // Set the action URL for the form (e.g., /jobs/application/<id>/update_status/)
+      statusForm.action = `/jobs/application/${applicationId}/update_status/`;
+
+      // Pre-select the current status in the dropdown
+      $(newStatusSelect).val(currentStatus);
+    });
+  });
+</script>
+{% endblock %}
