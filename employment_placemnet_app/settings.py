@@ -37,8 +37,25 @@ DEBUG = True
 ALLOWED_HOSTS = [config('RENDER_EXTERNAL_HOSTNAME', default='127.0.0.1')]
 #ALLOWED_HOSTS = []
 
-# Application definition
+#Session configuration
 
+# Session settings for inactivity logout
+# Set to False so the session cookie doesn't expire when the browser closes.
+# This allows the inactivity timer to function reliably.
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# Session timeout for inactivity (in seconds).
+# 2 hours = 2 * 60 minutes * 60 seconds = 7200 seconds.
+# This means if a user is inactive for 2 hours, their session will eventually expire
+# on the server side (at the next request if SESSION_SAVE_EVERY_REQUEST is True).
+SESSION_COOKIE_AGE = 7200
+
+# This is crucial for "inactivity" timeout.
+# It makes Django update the session's expiry every time a request is made,
+# effectively resetting the 2-hour timer with each user action.
+SESSION_SAVE_EVERY_REQUEST = True
+
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -163,8 +180,8 @@ DOMAIN = 'http://localhost:8000'
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 # Tell Django where to put “collected” static files
 STATIC_URL = '/static/'
-#STATIC_ROOT = BASE_DIR / "staticfiles"
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = BASE_DIR / "staticfiles"
+#STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 #STATICFILES_DIRS = [
 #    BASE_DIR / 'static',

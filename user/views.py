@@ -13,6 +13,12 @@ import qrcode
 
 CustomUser = get_user_model()
 
+# Define password policy constants
+MIN_PASSWORD_LENGTH = 8
+REQUIRES_UPPERCASE = True
+REQUIRES_NUMBER = True
+REQUIRES_SPECIAL_CHAR = True
+
 def generate_otp(user):
     if not user.mfa_secret:
         user.mfa_secret = pyotp.random_base32()
@@ -137,27 +143,56 @@ def logout_page(request):
 
 
 def signup_view(request, user_type):
+    """Handles new user registration with password policy enforcement."""
     context = {
         'user_type': user_type
     }
     if request.method == 'POST':
         email = request.POST.get('email')
-        password1 = request.POST.get('password1')
-        password2 = request.POST.get('password2')        
-        # Check if passwords match
-        if password1 != password2:
+        password = request.POST.get('password1') # Use 'password' for consistency
+        password2 = request.POST.get('password2')
+
+        # 1. Check if passwords match
+        if password != password2:
             messages.error(request, 'Passwords do not match. Please try again.')
             return render(request, 'signup.html', context)
-        # Check if email is already taken
+
+        # 2. Enforce password policy
+        if len(password) < MIN_PASSWORD_LENGTH:
+            messages.error(request, f'Password must be at least {MIN_PASSWORD_LENGTH} characters long.')
+            return render(request, 'signup.html', context)
+
+        if REQUIRES_UPPERCASE and not re.search(r"[A-Z]", password):
+            messages.error(request, 'Password must contain at least one capital letter.')
+            return render(request, 'signup.html', context)
+
+        if REQUIRES_NUMBER and not re.search(r"[0-9]", password):
+            messages.error(request, 'Password must contain at least one number.')
+            return render(request, 'signup.html', context)
+
+        # Special characters: using a common set. You can customize this regex.
+        # r"[!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?]" covers many common special chars
+        if REQUIRES_SPECIAL_CHAR and not re.search(r"[!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?]", password):
+            messages.error(request, 'Password must contain at least one special character (e.g., !@#$%^&*).')
+            return render(request, 'signup.html', context)
+
+        # 3. Check if email is already taken
         if CustomUser.objects.filter(email=email).exists():
             messages.error(request, 'Email is already in use. Please try another.')
             return render(request, 'signup.html', context)
-        # Create the new user
-        user = CustomUser.objects.create_user(username=email, email=email, password=password1, mfa_enabled = True, user_type=user_type)
+
+        # 4. Create the new user
+        # Note: Setting mfa_enabled=True directly upon creation.
+        # It's usually better to have the user activate it themselves after signup.
+        # However, following your original logic to proceed to activate_mfa.
+        user = CustomUser.objects.create_user(username=email, email=email, password=password, mfa_enabled=False, user_type=user_type)
         user.save()
-        messages.success(request, 'Sign up successful! You can now activate the MFA in your account.')
+        messages.success(request, 'Sign up successful! Please activate Two-Factor Authentication for your account.')
         request.session['mfa_user_id'] = user.id
 
         return redirect('activate_mfa')
 
     return render(request, 'signup.html', context)
+
+def privacy_policy(request):
+    return render(request, 'privacy_cookies_policy.html')

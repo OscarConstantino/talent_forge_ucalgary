@@ -9,5 +9,6 @@ urlpatterns = [
     path("signup/<int:user_type>/",views.signup_view,name='signup'),
     path("verify_mfa/", views.verify_mfa, name='verify_mfa'),
     path("disable-2fa/", views.disable_2fa, name='disable_2fa'),
-    path("activate_mfa/", views.activate_mfa, name='activate_mfa'),    
+    path("activate_mfa/", views.activate_mfa, name='activate_mfa'),
+    path("privacy_policy/", views.privacy_policy, name='privacy_policy'),    
 ]
