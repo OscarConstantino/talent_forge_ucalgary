@@ -25,17 +25,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # DEBUG = config('DEBUG', default=False, cast=bool)
-SECRET_KEY = 'django-insecure-v9ih(vmg)((b7ysd*1s%lz&vxlz$uxnbxfz+q#74(q2&#aa3vs'
-#SECRET_KEY = config('SECRET_KEY')
+#SECRET_KEY = 'django-insecure-v9ih(vmg)((b7ysd*1s%lz&vxlz$uxnbxfz+q#74(q2&#aa3vs'
+SECRET_KEY = config('SECRET_KEY')
 
-DATABASE_URL = 'postgresql://talent_forge_0yek_user:JdckVcZgNc7hICpNFgll13maKDAV7KPc@dpg-d1r93fur433s73a0tveg-a.oregon-postgres.render.com/talent_forge_0yek'
-#DATABASE_URL = config('DATABASE_URL')
+#DATABASE_URL = 'postgresql://talent_forge_0yek_user:JdckVcZgNc7hICpNFgll13maKDAV7KPc@dpg-d1r93fur433s73a0tveg-a.oregon-postgres.render.com/talent_forge_0yek'
+DATABASE_URL = config('DATABASE_URL')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-#ALLOWED_HOSTS = [config('RENDER_EXTERNAL_HOSTNAME', default='127.0.0.1')]
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [config('RENDER_EXTERNAL_HOSTNAME', default='127.0.0.1')]
+#ALLOWED_HOSTS = []
 
 #Session configuration
 
@@ -180,18 +180,18 @@ DOMAIN = 'http://localhost:8000'
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 # Tell Django where to put “collected” static files
 STATIC_URL = '/static/'
-#STATIC_ROOT = BASE_DIR / "staticfiles"
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-    BASE_DIR / 'talent_forge_frontend' / 'dist',  # ✅ matches actual React build folder
-]
+STATIC_ROOT = BASE_DIR / "staticfiles"
+#STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 #STATICFILES_DIRS = [
-#    os.path.join(BASE_DIR, 'static'),
-#    os.path.join(BASE_DIR, 'talent_forge_frontend', 'dist'),
+#    BASE_DIR / 'static',
+#    BASE_DIR / 'talent_forge_frontend' / 'dist',  # ✅ matches actual React build folder
 #]
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'talent_forge_frontend', 'dist'),
+]
 
 CORS_ALLOW_ALL_ORIGINS = True
 
