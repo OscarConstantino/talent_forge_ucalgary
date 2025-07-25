@@ -55,8 +55,6 @@ SESSION_COOKIE_AGE = 7200
 # effectively resetting the 2-hour timer with each user action.
 SESSION_SAVE_EVERY_REQUEST = True
 
-
-
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',

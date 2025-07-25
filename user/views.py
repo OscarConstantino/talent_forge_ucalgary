@@ -10,6 +10,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 import pyotp
 import qrcode
+import re
 
 CustomUser = get_user_model()
 
@@ -51,6 +52,18 @@ def home_view(request):
 
 @login_required
 def profile_view(request):
+    user = request.user
+
+    # Ensure user is an instance of CustomUser
+    if not isinstance(user, CustomUser):
+        return HttpResponseForbidden("Invalid user.")
+
+    # Require MFA before allowing profile access/creation
+    if not user.mfa_enabled:
+        request.session['mfa_user_id'] = user.id
+        messages.warning(request, 'You must activate Two-Factor Authentication before creating your profile.')
+        return redirect('activate_mfa')
+
     user = request.user
     if user.user_type == '2':
         if not hasattr(user, 'employer_profile'):
