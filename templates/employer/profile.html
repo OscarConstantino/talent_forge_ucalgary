@@ -1,0 +1,82 @@
+{% extends "base_users.html" %}
+{% load static %}
+
+{% block title %}Employer profile{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow p-4">
+    <div class="row align-items-center">
+      <!-- Company Logo -->
+      <div class="col-md-3 text-center">
+        {% if profile.logo %}
+          <img src="{{ profile.logo.url }}" alt="{{ profile.name }}" class="img-fluid rounded" style="max-height: 150px;">
+        {% else %}
+          <img src="/static/images/default_logo.png" alt="No Logo" class="img-fluid rounded" style="max-height: 150px;">
+        {% endif %}
+      </div>
+
+      <!-- Company Info -->
+      <div class="col-md-9">
+        <h2>{{ profile.name }}</h2>
+        <p><strong>Email:</strong> {{ profile.email }}</p>
+        <p><strong>Industry:</strong> {{ profile.industry }}</p>
+        <p><strong>Website:</strong>
+          {% if profile.company_website %}
+            <a href="{{ profile.company_website }}" target="_blank">{{ profile.company_website }}</a>
+          {% else %}
+            <span class="text-muted">Not provided</span>
+          {% endif %}
+        </p>
+        <p><strong>Location:</strong> {{ profile.location }}</p>
+        <p><strong>Number of Employees:</strong> {{ profile.number_employees }}</p>
+        <p><strong>About:</strong> 
+          {% if profile.about %}
+            {{ profile.about }}
+          {% else %}
+            <span class="text-muted">No description provided.</span>
+          {% endif %}
+        </p>
+      </div>
+    </div>
+
+    <!-- Delete Account Button -->
+    <div class="mt-4 text-end">
+      <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+        Delete My Account
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteAccountModalLabel">Confirm Account Deletion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete your account? <strong>This action cannot be undone.</strong></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <form method="POST" action="{% url 'delete_employer_account' %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Yes, Delete My Account</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<!-- Bootstrap CSS (usually in <head>) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap JS Bundle (must be after jQuery if used) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

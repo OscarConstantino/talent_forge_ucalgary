@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from .forms import EmployerProfileForm, JobForm
 from .models import EmployerProfile, Job
 from job_seeker.models import Skill, JobApplication
+from django.contrib import messages
+from django.contrib.auth import logout
 
 @login_required
 def create_employer_profile(request):
@@ -91,31 +93,48 @@ def job_applications(request, job_id):
 def update_application_status(request, application_id):
     if request.method == 'POST':
         application = get_object_or_404(JobApplication, pk=application_id)
-
-        # Basic permission check: Ensure the logged-in user (employer) has the right to modify this application.
-        # This is a crucial step for security. You might want more sophisticated checks.
-        # For example, check if the job associated with the application belongs to the current employer.
-        # This example assumes request.user is an Employer type.
         if request.user.is_authenticated and request.user.user_type == '2': # '2' for Employer
-            # Further check: Ensure the job associated with this application belongs to this employer
-            # This requires the Job model to have a link to the employer (e.g., a ForeignKey to CustomUser)
-            # Example (assuming Job has an 'employer' ForeignKey):
-            # if application.job.employer != request.user:
-            #     return redirect('permission_denied_page') # Or return HttpResponseForbidden
-
             new_status = request.POST.get('status')
 
             if new_status and new_status in [choice[0] for choice in JobApplication.STATUS_CHOICES]:
                 application.status = new_status
                 application.save()
                 # Optionally add a success message
-                # messages.success(request, f"Application status updated to {application.get_status_display()}")
-            # else:
-                # messages.error(request, "Invalid status provided.")
-        # else:
-            # messages.error(request, "You do not have permission to perform this action.")
-            # return redirect('login') # Or wherever unauthenticated users should go
-
-        # After updating, redirect back to the job applications page
-        # Make sure 'job_applications' URL expects job_id
+                messages.success(request, f"Application status updated to {application.get_status_display()}")
+            else:
+                messages.error(request, "Invalid status provided.")
+        else:
+            messages.error(request, "You do not have permission to perform this action.")
+            return redirect('login') # Or wherever unauthenticated users should go
+            
         return redirect('job_applications', job_id=application.job.id)
+
+@login_required
+def view_employer_profile(request):
+    profile = get_object_or_404(EmployerProfile, user=request.user)
+    return render(request, 'employer/profile.html', {'profile': profile})
+
+@login_required
+def delete_employer_account(request):
+    if request.method == 'POST':
+        user = request.user
+        try:
+            # Delete all jobs and related applications
+            employer_profile = get_object_or_404(EmployerProfile, user=user)
+            jobs = Job.objects.filter(employer=employer_profile)
+
+            for job in jobs:
+                JobApplication.objects.filter(job=job).delete()
+                job.delete()
+
+            employer_profile.delete()
+            user.delete()
+
+            logout(request)  # log the user out after deletion
+            messages.success(request, "Your account and all related data have been deleted.")
+            return redirect('home')  # Redirect to home or login page
+        except Exception as e:
+            messages.error(request, f"An error occurred: {e}")
+            return redirect('employer_dashboard')
+    
+    return render(request, 'employer/confirm_delete.html')  # GET confirmation page

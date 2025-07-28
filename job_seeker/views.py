@@ -12,6 +12,8 @@ from rest_framework import status, permissions, generics
 from rest_framework.decorators import api_view
 from .serializers import JobSeekerProfileSerializer, SkillSerializer, JobSeekerProfileCreateSerializer, JobSerializer
 from django.db.models import Q
+from django.contrib.auth import logout
+from django.contrib import messages
 
 
 @login_required
@@ -147,3 +149,23 @@ def apply_job(request):
 def my_applications_page(request):
     applications = JobApplication.objects.filter(applicant=request.user).select_related('job')
     return render(request, 'job_seeker/my_applications.html', {'applications': applications})
+
+@login_required
+def view_job_seeker_profile(request):
+    profile = get_object_or_404(JobSeekerProfile, user=request.user)
+    return render(request, 'job_seeker/profile_detail.html', {'profile': profile})
+
+@login_required
+def delete_job_seeker_account(request):
+    if request.method == 'POST':
+        user = request.user
+        try:
+            job_seeker_profile = get_object_or_404(JobSeekerProfile, user=user)
+            job_seeker_profile.delete()  # Delete profile
+            user.delete()  # Delete the user account
+            logout(request)
+            messages.success(request, "Your job seeker account and all data have been deleted.")
+            return redirect('home')
+        except Exception as e:
+            messages.error(request, f"Error deleting account: {e}")
+            return redirect('job_seeker_profile')

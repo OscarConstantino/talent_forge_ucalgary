@@ -62,7 +62,7 @@ const Header = () => {
       </div>
       <nav className="nav-links">
         <a href="/job_seeker_dashboard/" className="active">Home</a>
-        <a href="#">Profile</a>
+        <a href="/job_seeker/profile/">Profile</a>
         <a href="/my_applications/">Jobs applied</a>
         <a href="/job_search_page/">Search Job</a>
       </nav>

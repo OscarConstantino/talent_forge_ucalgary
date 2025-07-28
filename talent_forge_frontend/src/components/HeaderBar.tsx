@@ -64,8 +64,7 @@ const Header = () => {
         <a href="/employer_dashboard/" className="active">Home</a>
         <a href="/create_job/">Post a Job</a>
         <a href="/jobs/">Manage Active Listings</a>
-        <a href="#">Find Talent</a>
-        <a href="#">Premium</a>
+        <a href="/employer/profile/">Profile</a>
       </nav>
       <div className="user-controls"> {/* Changed div name for better semantics */}
         {/* Sign-out button */}

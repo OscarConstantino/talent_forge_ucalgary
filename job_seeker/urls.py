@@ -14,4 +14,6 @@ urlpatterns = [
     path('api/apply_job/', views.apply_job, name='job-search'),
     path('job_search_page/', views.job_search_page, name='job_search_page'),
     path('my_applications/', views.my_applications_page, name='my_applications_page'),
+    path('job_seeker/profile/', views.view_job_seeker_profile, name='job_seeker_profile'),
+    path('delete/', views.delete_job_seeker_account, name='delete_job_seeker_account'),
 ]
