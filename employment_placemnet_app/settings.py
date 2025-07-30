@@ -188,15 +188,15 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
 #STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-#STATICFILES_DIRS = [
-#    BASE_DIR / 'static',
-#    BASE_DIR / 'talent_forge_frontend' / 'dist',  # ✅ matches actual React build folder
-#]
-
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-    os.path.join(BASE_DIR, 'talent_forge_frontend', 'dist'),
+    BASE_DIR / 'static',
+    BASE_DIR / 'talent_forge_frontend' / 'dist',  # ✅ matches actual React build folder
 ]
+
+#STATICFILES_DIRS = [
+#    os.path.join(BASE_DIR, 'static'),
+#    os.path.join(BASE_DIR, 'talent_forge_frontend', 'dist'),
+#]
 
 CORS_ALLOW_ALL_ORIGINS = True
 
