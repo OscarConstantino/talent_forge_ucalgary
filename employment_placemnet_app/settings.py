@@ -25,10 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # DEBUG = config('DEBUG', default=False, cast=bool)
-#SECRET_KEY = 'django-insecure-v9ih(vmg)((b7ysd*1s%lz&vxlz$uxnbxfz+q#74(q2&#aa3vs'
 SECRET_KEY = config('SECRET_KEY')
 
-#DATABASE_URL = 'postgresql://talent_forge_0yek_user:JdckVcZgNc7hICpNFgll13maKDAV7KPc@dpg-d1r93fur433s73a0tveg-a.oregon-postgres.render.com/talent_forge_0yek'
 DATABASE_URL = config('DATABASE_URL')
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -54,6 +52,12 @@ SESSION_COOKIE_AGE = 7200
 # It makes Django update the session's expiry every time a request is made,
 # effectively resetting the 2-hour timer with each user action.
 SESSION_SAVE_EVERY_REQUEST = True
+
+#This flag prevents client-side JavaScript from accessing the session cookie
+SESSION_COOKIE_HTTPONLY = True
+
+#This flag instructs the browser to only send the session cookie over HTTPS (encrypted) connections.
+SESSION_COOKIE_SECURE = True
 
 # Application definition
 INSTALLED_APPS = [
@@ -108,6 +112,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "allauth.account.middleware.AccountMiddleware",
+    #'employment_placemnet_app.middleware.CSPMiddleware'
 ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

@@ -1,1 +1,1 @@
-web: gunicorn employment_placemnet_app.wsgi
+web: gunicorn --no-send-server employment_placemnet_app.wsgi:application --bind 0.0.0.0:$PORT
