@@ -3,6 +3,7 @@ anyio==4.9.0
 asgiref==3.8.1
 Authlib==1.6.1
 bandit==1.8.6
+build==1.2.2.post1
 cachetools==5.5.2
 certifi==2025.6.15
 cffi==1.17.1
@@ -13,6 +14,7 @@ dj-database-url==3.0.0
 Django==5.2.4
 django-allauth==65.9.0
 django-cors-headers==4.7.0
+django-csp==4.0
 django-storages==1.14.6
 django-vite==3.1.0
 django-widget-tweaks==1.5.0
@@ -41,6 +43,7 @@ nltk==3.9.1
 packaging==25.0
 pbr==6.1.1
 pillow==11.3.0
+pip-tools==7.4.1
 proto-plus==1.26.1
 protobuf==6.31.1
 psutil==6.1.1
@@ -54,6 +57,7 @@ pydantic==2.9.2
 pydantic_core==2.23.4
 Pygments==2.19.2
 pyotp==2.9.0
+pyproject_hooks==1.2.0
 python-decouple==3.8
 PyYAML==6.0.2
 qrcode==8.2
@@ -76,4 +80,5 @@ tqdm==4.67.1
 typer==0.16.0
 typing_extensions==4.14.0
 urllib3==2.5.0
+wheel==0.45.1
 whitenoise==6.9.0
