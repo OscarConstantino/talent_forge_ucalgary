@@ -209,3 +209,6 @@ def signup_view(request, user_type):
 
 def privacy_policy(request):
     return render(request, 'privacy_cookies_policy.html')
+
+def account_delete_procedure(request):
+    return render(request, 'account_delete_procedure.html')

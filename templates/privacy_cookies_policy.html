@@ -3,6 +3,7 @@
 {% block title %}Privacy & Cookies Policy - TalentForge{% endblock %}
 
 {% block content %}
+{% load static %}
 <div class="container">
     <div class="bg-white p-4 rounded-3" style="color: black;">
         <h1>Privacy & Cookies Policy</h1>
@@ -17,6 +18,7 @@
             <li><strong>Address</strong>: UofC Heaven Inc., Calgary, AB – T3A 7G4 </li>
             <li><strong>Contact</strong>: privacy@talentforge.com </li>
         </ul>
+
         <p>If you have any questions about our practices or this policy, please contact us. No UK or EU representative is needed unless you are established or focused on those regions.</p>
 
         <h2>2. Your Rights Relating to Your Personal Data</h2>
@@ -127,6 +129,13 @@
 
         <h2>13. Changes to Our Privacy & Cookies Policy</h2>
         <p>We may update this policy at any time.  We’ll update the “Last updated” date and post changes here. Significant changes will be communicated via email or site notice. It is important that the personal data we hold about you is accurate. Please keep us informed of any changes.</p>
-    </div>
+    <hr>
+    <p><h2>Procedures</h2></p>
+    <a href="{% url 'account_delete_procedure' %}">Account delete procedure</a>
+    <hr>
+    <a href="{% static 'pdfs/Privacy_Policy_Talentforge.pdf' %}" class="btn btn-primary" download="Privacy_Policy_Talentforge.pdf">
+        Download Policy Document (PDF)
+    </a>
+    <hr>
 </div>
 {% endblock %}

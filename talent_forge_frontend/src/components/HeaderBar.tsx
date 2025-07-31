@@ -1,5 +1,3 @@
-import { LogOut } from "lucide-react";
-
 // Helper function to get CSRF token from cookies
 function getCookie(name: string) {
   let cookieValue = null;
@@ -66,11 +64,15 @@ const Header = () => {
         <a href="/jobs/">Manage Active Listings</a>
         <a href="/employer/profile/">Profile</a>
       </nav>
-      <div className="user-controls"> {/* Changed div name for better semantics */}
-        {/* Sign-out button */}
-        <button onClick={handleSignOut} className="btn btn-outline btn-sm d-flex align-items-center">
-          <LogOut size={24} strokeWidth={2.5} />
-          <span className="sign-out-text">Sign Out</span> {/* Optional text label */}
+      <div className="user-controls">
+        {/* Your logout button */}
+        <button onClick={handleSignOut} className="btn btn-primary btn-sm d-flex align-items-center ">
+          <svg xmlns="http://www.w3.org/2000/svg" className="me-1" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+          <span className="sign-out-text">Sign Out</span>
         </button>
       </div>
     </header>

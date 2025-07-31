@@ -15,6 +15,7 @@ import dj_database_url
 from django.contrib.messages import constants as messages
 from decouple import config
 import os
+from csp.constants import SELF, NONCE, UNSAFE_INLINE, UNSAFE_EVAL
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,10 +31,9 @@ SECRET_KEY = config('SECRET_KEY')
 DATABASE_URL = config('DATABASE_URL')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [config('RENDER_EXTERNAL_HOSTNAME', default='127.0.0.1')]
-#ALLOWED_HOSTS = []
 
 #Session configuration
 
@@ -59,6 +59,51 @@ SESSION_COOKIE_HTTPONLY = True
 #This flag instructs the browser to only send the session cookie over HTTPS (encrypted) connections.
 SESSION_COOKIE_SECURE = True
 
+#Setting CSRF cookie protection
+CSRF_COOKIE_HTTPONLY = True
+
+CSRF_COOKIE_SECURE = True
+
+#Allowed CORS
+CORS_ALLOWED_ORIGINS = [
+    #"https://talent-forge-ucalgary.onrender.com", # Your own domain
+    "http://localhost:3000", # For local frontend development
+    "http://127.0.0.1:8000", # For local Django development (if needed for cross-port communication)
+]
+CORS_ALLOW_ALL_ORIGINS = False
+
+CONTENT_SECURITY_POLICY = {
+    'DIRECTIVES': {
+        'default-src': (SELF,),
+        'script-src': (
+            SELF,
+            "https://code.jquery.com",
+            "https://cdn.jsdelivr.net",
+            "https://cdnjs.cloudflare.com",
+            NONCE,             # <--- THIS IS THE CORRECT WAY TO INCLUDE NONCE
+            UNSAFE_INLINE,     # Keep temporarily for diagnosis
+            UNSAFE_EVAL,       # Keep temporarily for diagnosis
+        ),
+        'style-src': (
+            SELF,
+            "https://cdn.jsdelivr.net",
+            "https://cdnjs.cloudflare.com",
+            "https://fonts.googleapis.com",
+            UNSAFE_INLINE, # Keep this if you have inline <style> tags or style attributes
+        ),
+        'img-src': (SELF, "data:"),
+        'font-src': (
+            SELF,
+            "https://fonts.gstatic.com",
+            "https://cdnjs.cloudflare.com",
+            "data:",
+        ),
+        'connect-src': (SELF,), # Only self unless you have explicit AJAX/WebSocket connections
+        'report-uri': '/csp-report-endpoint/',
+    },
+    'REPORT_ONLY': True,
+}
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -82,6 +127,8 @@ INSTALLED_APPS = [
     'rest_framework',
     # Correct way to add Django CORS Headers
     'corsheaders',
+    #CSP header protection
+    'csp',
 ]
 
 # Bucket configuration
@@ -112,7 +159,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "allauth.account.middleware.AccountMiddleware",
-    #'employment_placemnet_app.middleware.CSPMiddleware'
+    'csp.middleware.CSPMiddleware',
 ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -186,19 +233,11 @@ DOMAIN = 'http://localhost:8000'
 # Tell Django where to put “collected” static files
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
-#STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-    BASE_DIR / 'talent_forge_frontend' / 'dist',  # ✅ matches actual React build folder
+    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'talent_forge_frontend', 'dist'),
 ]
-
-#STATICFILES_DIRS = [
-#    os.path.join(BASE_DIR, 'static'),
-#    os.path.join(BASE_DIR, 'talent_forge_frontend', 'dist'),
-#]
-
-CORS_ALLOW_ALL_ORIGINS = True
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

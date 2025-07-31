@@ -1,4 +1,3 @@
-<!-- yourapp/templates/base.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,25 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}YourApp{% endblock %}</title>
     <link rel="icon" type="image/x-icon" href="{% static 'images/LogoBlack.png' %}">
-    <!-- Bootstrap CSS 
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" 
-      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/home_base.css' %}">
 </head>
 <body>
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-expand-lg custom-navbar shadow-sm">
-
         <div class="container">
             <a class="navbar-brand" href="{% url 'home' %}">
                 <img src="{% static 'images/LogoBlack.png' %}" alt="TalentForge Logo" width="120" height="90">
                 {# <span>TalentForge</span> #}
             </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" 
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -42,7 +37,7 @@
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="button btn btn-google" style="color: #333;" href="{% url 'login' %}">Login</a>
+                            <a class="button btn btn-google" href="{% url 'login' %}">Login</a>
                         </li>
                     {% endif %}
                 </ul>
@@ -50,50 +45,39 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
     <div id="vanta-background"></div>
 
-    <div class="d-flex flex-column justify-content-center align-items-center text-white">
+    <div class="d-flex flex-column flex-center-container text-white">
         {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
                     {{ message }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             {% endfor %}
         {% endif %}
         {% block content %}{% endblock %}
     </div>
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" 
-        integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" 
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.158.0/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
-    <script>
-        // Initialize Vanta.js
-        VANTA.NET({
-            el: "#vanta-background", // The HTML element to attach the effect to
-            mouseControls: true,
-            touchControls: true,
-            gyroControls: false,
-            minHeight: 200.00,
-            minWidth: 200.00,
-            scale: 1.00,
-            scaleMobile: 1.00,
-            color: 0xaa9432,
-            backgroundColor: 0x141d46,
-            points: 13.00,
-            maxDistance: 22.00,
-            spacing: 18.00
-        })
-    </script>
+    <div id="cookieConsentBanner">
+        <p>
+            We use cookies to improve your experience on our site. By clicking "Accept", you agree to the storing of cookies on your device. By clicking "Decline", non-essential cookies will be disabled. For more information, please see our
+            <a href="{% url 'privacy_policy' %}">Privacy & Cookies Policy</a>.
+        </p>
+        <div>
+            <button id="acceptCookiesBtn" class="btn btn-accept">Accept</button>
+            <button id="declineCookiesBtn" class="btn btn-decline">Decline</button>
+        </div>
+    </div>
 
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs="
+        nonce="{{ csp_nonce }}"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" nonce="{{ csp_nonce }}" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.158.0/three.min.js" nonce="{{ csp_nonce }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js" nonce="{{ csp_nonce }}"></script>
+    <script src="{% static 'js/vanta.js' %}" nonce="{{ csp_nonce }}"></script>
+    <script src="{% static 'js/cookie_agreement.js' %}" nonce="{{ csp_nonce }}"></script>
 </body>
 </html>

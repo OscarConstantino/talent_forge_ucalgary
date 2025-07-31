@@ -1,13 +1,51 @@
 /* Add your custom styles here */
+/* Ensure html and body take full viewport height, and reset default margins/padding */
 html, body {
-    height: 100%;
+    height: 100%; /* Important for vh units on children */
     margin: 0;
     padding: 0;
 }
+
 body {
-    display: flex; /* Makes body a flex container */
-    flex-direction: column; /* Stacks content vertically */
+    display: flex;
+    flex-direction: column;
+    /* min-height: 100vh; */ /* Not strictly necessary on body if html is 100% height and its child takes 100% */
+    position: relative; /* Create a stacking context for body itself */
+    z-index: 0; /* Ensures body and its children are above Vanta's -1 */
 }
+
+/* Consolidate and refine Vanta background styles */
+#vanta-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw; /* Use viewport width */
+    height: 100vh; /* Use viewport height */
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* Your main content wrapper */
+.d-flex.flex-column.flex-center-container {
+    position: relative; /* Create stacking context */
+    z-index: 1; /* Ensure it's above Vanta's -1 */
+    flex-grow: 1; /* Make it fill available vertical space in the flex column */
+    /* min-height: 100vh; */ /* Only if you want *this specific div* to always be 100vh,
+                              even if its content is short. Otherwise, flex-grow: 1 might be enough.
+                              Consider if it should be min-height: calc(100vh - (navbar height)); */
+    width: 100%; /* Ensure it takes full width */
+    /* You can remove display: flex; justify-content: center; align-items: center; if you put these on body */
+    /* But since body is flex-column, you want these on the content div itself for horizontal/vertical centering within it */
+}
+
+/* Make sure your main content actually takes vertical space */
+main { /* Or whatever tag contains your block content, e.g., a <main> tag around {% block content %} */
+    flex-grow: 1; /* Allow content area to expand */
+    display: flex; /* If content needs flex properties inside */
+    flex-direction: column; /* If content needs flex properties inside */
+}
+
 .navbar-brand {
     font-weight: bold;
 }
@@ -124,4 +162,76 @@ h2 {
     width: 100%;
     height: 100%;
     z-index: -1; /* Ensures it stays behind your content */
+}
+
+.flex-center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Don't forget other properties */
+}
+
+#cookieConsentBanner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333; /* Dark background */
+    color: white;
+    padding: 15px 20px;
+    text-align: center;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+    z-index: 1000; /* Make sure it's on top of other content */
+    display: none; /* Hidden by default, shown by JS if no consent */
+    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+    justify-content: center;
+    align-items: center;
+    gap: 15px; /* Space between elements */
+}
+
+#cookieConsentBanner p {
+    margin: 0;
+    font-size: 0.95em;
+}
+
+#cookieConsentBanner a {
+    color: #87CEEB; /* A light blue for links */
+    text-decoration: underline;
+}
+
+#cookieConsentBanner .btn {
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    text-decoration: none; /* Remove underline from button */
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+#cookieConsentBanner .btn-accept {
+    background-color: #007bff; /* Bootstrap primary blue */
+    color: white;
+    border: none;
+}
+
+#cookieConsentBanner .btn-accept:hover {
+    background-color: #0056b3;
+}
+
+#cookieConsentBanner .btn-decline {
+    background-color: transparent; /* Transparent background */
+    color: white; /* White text */
+    border: 1px solid white; /* White border */
+}
+
+#cookieConsentBanner .btn-decline:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Light background on hover */
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #cookieConsentBanner {
+        flex-direction: column; /* Stack items vertically */
+        text-align: left;
+        align-items: flex-start;
+    }
 }

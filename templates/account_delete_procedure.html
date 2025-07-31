@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Privacy & Cookies Policy - TalentForge{% endblock %}
+
+{% block content %}
+{% load static %}
+<div class="container">
+    <div class="bg-white p-4 rounded-3" style="color: black;">
+        <h1>Account Deletion Procedure</h1>
+        <p class="meta-info">
+            <strong>Effective Date:</strong> July 28, 2025<br>
+            <strong>Owner:</strong> Privacy Officer<br>
+            <strong>Version:</strong> 1.0<br>
+            <strong>Applies To:</strong> All TalentForge user accounts (job seekers and recruiters)
+        </p>
+        <h3>1. Purpose</h3>
+        <p>
+            This document outlines the step-by-step procedure for processing user account deletion requests in accordance with our Privacy & Cookies Policy, and applicable data protection laws like GDPR, PIPEDA, and CCPA.
+        </p>
+
+        <h3>2. Scope</h3>
+        <ul>
+            <li>All registered users of TalentForge (Job Seekers and Recruiter Company Profiles)</li>
+            <li>User-initiated deletion via the TalentForge web application</li>
+        </ul>
+
+        <h3>3. Deletion Method</h3>
+        <p>Users can delete their accounts at any time through their profile settings.</p>
+        <ol>
+            <li>Log in to your TalentForge account.</li>
+            <li>Navigate to Profile.</li>
+            <li>Click on “Delete My Account”.</li>
+            <li>Confirm the deletion action when prompted.</li>
+        </ol>
+
+        <h3>4. Backend Process (Post-Deletion)</h3>
+        <ol>
+            <li>The user’s account and associated data are immediately deleted from the database.</li>
+            <li>This includes:
+                <ul>
+                    <li>Personal information (name, email, profile details)</li>
+                    <li>Uploaded resume or job listing details</li>
+                    <li>Company/recruiter profile (if applicable)</li>
+                </ul>
+            </li>
+            <li>Session tokens and cookies are invalidated.</li>
+            <li>A final confirmation email is sent to the user confirming account deletion.</li>
+        </ol>
+
+        <h3>5. Data Handling Notes</h3>
+        <ul>
+            <li>Deletion is permanent and irreversible.</li>
+            <li>No data is retained, unless required by law.</li>
+            <li>Render.com (our hosting provider) may retain server-level logs, which are not tied to user profiles and are managed per Render’s own retention policy.</li>
+        </ul>
+
+        <h3>6. Logging (Internal)</h3>
+        <ul>
+            <li>Account deletion is logged for audit purposes with:
+                <ul>
+                    <li>Date and time of deletion</li>
+                    <li>User ID or email</li>
+                    <li>Method (UI-triggered)</li>
+                </ul>
+            </li>
+            <li>No personally identifiable data is retained in the log beyond what’s required for compliance tracking.</li>
+        </ul>
+
+        <h3>7. Exceptions</h3>
+        <p>
+            There are no exceptions; all users can delete their own accounts. No admin approval is needed. Once deleted, accounts cannot be restored.
+        </p>
+
+        <h3>8. Review Cycle</h3>
+        <p>
+            This procedure will be reviewed annually or whenever a major change is made to the account deletion functionality.
+        </p>
+
+        <h3>9. Parent Policy</h3>
+        <ul>
+            <li>Privacy Policy</li>
+        </ul>
+
+        <hr>
+        <a href="{% static 'pdfs/Account_Deletion_Procedure.pdf' %}" class="btn btn-primary" download="Account_Deletion_Procedure.pdf">
+                Download Procedure Document (PDF)
+        </a>
+        <hr>
+    </div>
+</div>
+{% endblock %}
