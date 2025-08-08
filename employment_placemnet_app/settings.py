@@ -31,9 +31,10 @@ SECRET_KEY = config('SECRET_KEY')
 DATABASE_URL = config('DATABASE_URL')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [config('RENDER_EXTERNAL_HOSTNAME', default='127.0.0.1')]
+#ALLOWED_HOSTS = []
 
 #Session configuration
 
@@ -75,21 +76,21 @@ CORS_ALLOW_ALL_ORIGINS = False
 CONTENT_SECURITY_POLICY = {
     'DIRECTIVES': {
         'default-src': (SELF,),
+        'base-uri': (SELF,),        # RECOMMENDED ADDITION
+        'form-action': (SELF,),     # RECOMMENDED ADDITION
+        'frame-ancestors': ('none',), # RECOMMENDED ADDITION (or ('none',) if never framed)
         'script-src': (
             SELF,
             "https://code.jquery.com",
             "https://cdn.jsdelivr.net",
             "https://cdnjs.cloudflare.com",
-            NONCE,             # <--- THIS IS THE CORRECT WAY TO INCLUDE NONCE
-            UNSAFE_INLINE,     # Keep temporarily for diagnosis
-            UNSAFE_EVAL,       # Keep temporarily for diagnosis
+            NONCE,
         ),
         'style-src': (
             SELF,
             "https://cdn.jsdelivr.net",
             "https://cdnjs.cloudflare.com",
             "https://fonts.googleapis.com",
-            UNSAFE_INLINE, # Keep this if you have inline <style> tags or style attributes
         ),
         'img-src': (SELF, "data:"),
         'font-src': (
@@ -98,8 +99,9 @@ CONTENT_SECURITY_POLICY = {
             "https://cdnjs.cloudflare.com",
             "data:",
         ),
-        'connect-src': (SELF,), # Only self unless you have explicit AJAX/WebSocket connections
+        'connect-src': (SELF,),
         'report-uri': '/csp-report-endpoint/',
+        # Consider 'report-to' instead of 'report-uri' for modern browsers if you can implement the Report-To header.
     },
     'REPORT_ONLY': True,
 }
@@ -232,7 +234,14 @@ DOMAIN = 'http://localhost:8000'
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 # Tell Django where to put “collected” static files
 STATIC_URL = '/static/'
+
 STATIC_ROOT = BASE_DIR / "staticfiles"
+#STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+#STATICFILES_DIRS = [
+#    BASE_DIR / 'static',
+#    BASE_DIR / 'talent_forge_frontend' / 'dist',  # ✅ matches actual React build folder
+#]
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),

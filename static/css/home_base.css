@@ -76,6 +76,11 @@ h2 {
     font-weight: 700;
 }
 
+h1 {
+    color: #998631;
+    font-size: 60px;
+}
+
 .btn-google, .btn-submit {
     width: 100%;
     padding: 10px;
